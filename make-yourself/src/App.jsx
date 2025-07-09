@@ -1,25 +1,42 @@
-import React from 'react'
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Landing from "./Pages/Landing";
-// import ChatBot from './Components/Chatbot';
-import Login from './Pages/Login';
-import Dashboard from './Pages/Dashboard';
-import Signup from './Pages/Signup';
+import Dashboard from "./Pages/Dashboard";
+import Auth from './Pages/Auth';
+import Onboarding from "./Pages/OnBoarding"
 import { useAuth } from './Context/AuthContext';
 
 function App() {
-
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   return (
     <Router>
       <Routes>
+        {/* 🏠 Landing Page */}
         <Route path="/" element={<Landing />} />
-        <Route path='/login' element={user? <Navigate to="/dashboard"/>: <Login/>}/>
-        <Route path="/signup" element={user ? <Navigate to="/dashboard" /> : <Signup />} />
-        <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+
+        {/* 🔐 Auth Page */}
+        <Route
+          path="/auth"
+          element={user ? <Navigate to="/onboarding" /> : <Auth />}
+        />
+
+        {/* ♻️ Legacy redirects */}
+        <Route path="/signup" element={<Navigate to="/auth" />} />
+        <Route path="/login" element={<Navigate to="/auth" />} />
+
+        {/* 🧠 Onboarding */}
+        <Route
+          path="/onboarding"
+          element={user ? <Onboarding /> : <Navigate to="/auth" />}
+        />
+
+        {/* 🧱 Dashboard */}
+        <Route
+          path="/dashboard"
+          element={user ? <Dashboard /> : <Navigate to="/auth" />}
+        />
       </Routes>
-      {/* <ChatBot/> */}
     </Router>
   );
 }
